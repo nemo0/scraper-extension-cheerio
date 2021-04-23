@@ -7,6 +7,16 @@ chrome.browserAction.onClicked.addListener(function (tab) {
       message: 'browser_action',
       url: url.url,
     });
-    chrome.tabs.create({ url: newUrl });
   });
+});
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.message === 'open_new_tab') {
+    chrome.tabs.update({ url: request.url });
+  }
+});
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.message === 'dom') {
+    console.log(request.dom);
+  }
 });
