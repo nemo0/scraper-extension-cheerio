@@ -19620,6 +19620,7 @@ module.exports = Mixin;
 var html = document.documentElement.outerHTML;
 chrome.extension.sendMessage(null, { message: 'dom', dom: html });
 
+// Node.js Starts Here
 const cheerio = require('cheerio');
 const $ = cheerio.load(html);
 
@@ -19640,10 +19641,17 @@ console.log(title.text());
 // var link = $('a:contains("Comment")');
 // console.log(link.attr('href'));
 
+// Getting Comments from Single Post
+let commentArray = [];
+
 const listOfComments = $('[data-sigil=m-mentions-expand]')
   .find('[data-sigil=comment-body]')
   .toArray()
-  .map((element) => $(element).text());
+  .map((element) => {
+    let comments = {};
+    comments.comment = $(element).text();
+    commentArray.push(comments);
+  });
 
 const listOfCommenter = $('[data-sigil=comment]')
   .find('div:nth-child(2) > div > div > div > a')
@@ -19651,20 +19659,58 @@ const listOfCommenter = $('[data-sigil=comment]')
   .map((element) => $(element).text());
 
 console.log(listOfCommenter);
-// console.log(
-//   $('[data-sigil=comment] > div:nth-child(2) > div > div > div > a').text()
-// );
+console.log(listOfComments);
+console.log(commentArray);
 
-// console.log(listOfComments);
-// console.log(listOfCommenter);
-// var list = [];
-// $('.story_body_container')
+// const linksOfPosts = $('#m_group_stories_container')
 //   .find('a:contains("Comment")')
-//   .each(function (index, element) {
-//     list.push($(this).attr('href'));
+//   .toArray()
+//   .map((element) => {
+//     $(element).attr('href');
 //   });
-// console.dir(list);
+// console.log(linksOfPosts);
 
-// for(let i = 0; i < )
+let links = [];
+$('a:contains("Comment")').each((index, elem) => {
+  links.push($(elem).attr('href'));
+});
+console.log(links);
+
+let postId = [];
+let urlArr = [];
+
+for (link of links) {
+  newLink = link.split('/');
+  postId.push(newLink[6]);
+  const urlPost = newLink.splice(0, 5).join('/');
+  urlArr.push(urlPost);
+}
+
+urlArr = [...new Set(urlArr)];
+console.log(urlArr);
+
+for (let i = 1; i < urlArr.length; i++) {
+  let fullUrl = 'https://m.facebook.com' + urlArr[i];
+  chrome.runtime.sendMessage({
+    message: 'update_tab_for_comments',
+    url: fullUrl,
+  });
+  chrome.runtime.onMessage.addListener(function (
+    request,
+    sender,
+    sendResponse
+  ) {
+    if (request.message === 'tab_updated_for_comments') {
+      const listOfComments = $('[data-sigil=m-mentions-expand]')
+        .find('[data-sigil=comment-body]')
+        .toArray()
+        .map((element) => {
+          let comments = {};
+          comments.comment = $(element).text();
+          commentArray.push(comments);
+        });
+    }
+  });
+}
 
 },{"cheerio":8}]},{},[89]);

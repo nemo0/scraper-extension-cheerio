@@ -20,4 +20,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     dom = request.dom;
     console.log(dom);
   }
+  if (request.message === 'update_tab_for_comments') {
+    chrome.tabs.update({ url: request.url });
+    chrome.runtime.sendMessage(null, {
+      message: 'tab_updated_for_comments',
+    });
+  }
 });
