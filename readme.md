@@ -1,12 +1,14 @@
-# Get URL with content script
+### Plan
 
-# Pass in using message passing to background script
+- Get URL with content script
 
-# Convert to mobile version using background script
+- Pass in using message passing to background script
 
-# Access DOM of mobile version
+- Convert to mobile version using background script
 
-# Use cheerio to scrape
+- Access DOM of mobile version
+
+- Use cheerio to scrape
 
 ### Problem Currently Facing
 
@@ -19,4 +21,4 @@
 - The `content` page can access the Page Source, after accessing the page source, will send a message to the background page along with the data
 - When the message is received, will update the array of comments in the background page
 
-* The main `content` page is the `other.js` file. `content.js` is generated using `browserify`.
+| The main `content` page is the `other.js` file. `content.js` is generated using `browserify`.
