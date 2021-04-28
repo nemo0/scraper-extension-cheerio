@@ -96,6 +96,16 @@ for (link of links) {
 urlArr = [...new Set(urlArr)];
 console.log(urlArr);
 
+chrome.runtime.sendMessage(
+  {
+    message: 'sending_array_posts',
+    url: urlArr,
+  },
+  function (response) {
+    console.log(`message from background: ${JSON.stringify(response)}`); // shows undefined
+  }
+);
+
 for (let i = 1; i < urlArr.length; i++) {
   let fullUrl = 'https://m.facebook.com' + urlArr[i];
   chrome.runtime.sendMessage({

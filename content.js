@@ -19689,38 +19689,38 @@ for (link of links) {
 urlArr = [...new Set(urlArr)];
 console.log(urlArr);
 
-// for (let i = 1; i < urlArr.length; i++) {
-//   let fullUrl = 'https://m.facebook.com' + urlArr[i];
-//   chrome.runtime.sendMessage({
-//     message: 'update_tab_for_comments',
-//     url: fullUrl,
-//   });
-//   chrome.runtime.onMessage.addListener(function (
-//     request,
-//     sender,
-//     sendResponse
-//   ) {
-//     if (request.message === 'tab_updated_for_comments') {
-//       const listOfComments = $('[data-sigil=m-mentions-expand]')
-//         .find('[data-sigil=comment-body]')
-//         .toArray()
-//         .map((element) => {
-//           let comments = {};
-//           comments.comment = $(element).text();
-//           commentArray.push(comments);
-//         });
-//     }
-//   });
-// }
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.message2 === 'new') {
-    console.log(request.message2);
-    chrome.runtime.sendMessage({
-      message2: 'yo',
-    });
+chrome.runtime.sendMessage(
+  {
+    message: 'sending_array_posts',
+    url: urlArr,
+  },
+  function (response) {
+    console.log(`message from background: ${JSON.stringify(response)}`); // shows undefined
   }
-  return true;
-});
+);
+
+for (let i = 1; i < urlArr.length; i++) {
+  let fullUrl = 'https://m.facebook.com' + urlArr[i];
+  chrome.runtime.sendMessage({
+    message: 'update_tab_for_comments',
+    url: fullUrl,
+  });
+  chrome.runtime.onMessage.addListener(function (
+    request,
+    sender,
+    sendResponse
+  ) {
+    if (request.message === 'tab_updated_for_comments') {
+      const listOfComments = $('[data-sigil=m-mentions-expand]')
+        .find('[data-sigil=comment-body]')
+        .toArray()
+        .map((element) => {
+          let comments = {};
+          comments.comment = $(element).text();
+          commentArray.push(comments);
+        });
+    }
+  });
+}
 
 },{"cheerio":8}]},{},[89]);
