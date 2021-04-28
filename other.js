@@ -88,7 +88,7 @@ let urlArr = [];
 
 for (link of links) {
   newLink = link.split('/');
-  postId.push(newLink[6]);
+  postId.push(newLink[5]);
   const urlPost = newLink.splice(0, 5).join('/');
   urlArr.push(urlPost);
 }
